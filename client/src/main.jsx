@@ -8,6 +8,8 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { Container } from "@mui/material";
+import "./firebase/config.jsx"
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
