@@ -2,10 +2,12 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import Login from "../pages/Login.jsx";
 import Home from "../pages/Home.jsx";
 import AuthProvider from "../context/AuthProvider.jsx";
-import ProtecRoute from "./ProtecRoute.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import NodeList from "../components/NoteList.jsx";
 import Note from "../components/Note.jsx";
+import { noteLoader } from "../utils/noteUtil.js";
+import { folderLoader } from "../utils/folderUtil.js";
 //TODO
 const AuthLayout = () => {
   return (
@@ -24,15 +26,17 @@ export default createBrowserRouter([
         path: "/login",
       },
       {
-        element: <ProtecRoute />,
+        element: <ProtectedRoute />,
         children: [
           {
             element: <Home />,
             path: "/",
+            loader: folderLoader,
             children: [
               {
                 element: <NodeList />,
                 path: "folder/:folderId",
+                loader: noteLoader,
                 children: [{ element: <Note />, path: "note/:noteId" }],
               },
             ],

@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-function ProtecRoute({ children }) {
+function ProtectedRoute({ children }) {
   const navigate = useNavigate();
   if (!localStorage.getItem("accessToken")) {
     navigate("/login");
@@ -10,4 +10,4 @@ function ProtecRoute({ children }) {
   return <Outlet />;
 }
 
-export default ProtecRoute;
+export default ProtectedRoute;
