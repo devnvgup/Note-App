@@ -4,9 +4,10 @@ import { Link, Outlet, useParams, useLoaderData } from "react-router-dom";
 
 function NoteList() {
   const { noteId } = useParams();
-  console.log(noteId);
   const [activeNoteId, setActiveNoteId] = useState(noteId);
-  const notes = useLoaderData()
+  const {
+    folder: { notes },
+  } = useLoaderData();
   return (
     <Grid container height="100%">
       <Grid
@@ -28,11 +29,7 @@ function NoteList() {
           }
         >
           {notes.map(({ id, content }) => (
-            <Link
-              key={id}
-              to={`note/${id}`}
-              style={{ textDecoration: "none" }}
-            >
+            <Link key={id} to={`note/${id}`} style={{ textDecoration: "none" }}>
               <Card
                 onClick={() => setActiveNoteId(id)}
                 sx={{ mb: "5px" }}
