@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const authorSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      required: true,
+    },
     uid: {
       type: String,
       required: true,

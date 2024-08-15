@@ -25,14 +25,12 @@ export const resolvers = {
     },
   },
   Mutation: {
-    addFolder: async (parent, arg) => {
-      const newFolder = new FolderModel(arg);
+    addFolder: async (parent, arg, context) => {
+      const newFolder = new FolderModel({ ...arg, authorId: context.uid });
       await newFolder.save();
       return newFolder;
     },
     register: async (parent, arg) => {
-      console.log(arg);
-      
       const foundUser = await AuthorModel.findOne({ uid: arg.uid });
       if (!foundUser) {
         const newUser = new AuthorModel(arg);
