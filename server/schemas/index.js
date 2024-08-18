@@ -4,7 +4,7 @@ export const typeDefs = `#graphql
     id: String!,
     name: String,
     createdAt: String,
-    author:[Author],
+    author:Author,
     notes:[Note]
   }
 
@@ -32,6 +32,7 @@ export const typeDefs = `#graphql
 
   type Mutation {
     addFolder(name:String!):Folder,
-    register(uid:String!,name:String!):Author
+    register(uid:String!,name:String!):Author,
+    addNote(content:String!,folderId:String!):Note
   }
 `;

@@ -11,3 +11,21 @@ export const folderLoader = async () => {
   const data = await request({ query });
   return data;
 };
+
+export const addNewFolder = async (newFolder) => {
+  const query = `mutation Mutation($name: String!) {
+  addFolder(name: $name) {
+    name
+    author {
+      name
+    }
+  }
+}`;
+  const payload = {
+    query,
+    variables: {
+      name: newFolder.name,
+    },
+  };
+  const data = await request(payload);
+};

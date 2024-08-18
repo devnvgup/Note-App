@@ -27,10 +27,11 @@ const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}
 const PORT = process.env.PORT || 4000;
 
 const authorizationJWT = async (req, res, next) => {
-  if (req.headers.host == "localhost:4000") {
-    next();
-    return;
-  }
+  // if (req.headers.host == "localhost:4000") {
+  //   console.log("Debug");
+  //   next();
+  //   return;
+  // }
   const authorizationHeader = req.headers.authorization;
   if (authorizationHeader) {
     const accessToken = authorizationHeader.split(" ")[1];
@@ -46,7 +47,8 @@ const authorizationJWT = async (req, res, next) => {
         return res.status(403).json({ message: "Forbidden", error });
       });
   } else {
-    return res.status(401).json("Unauthorize");
+    // return res.status(401).json("Unauthorize");
+    next()
   }
 };
 

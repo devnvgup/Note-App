@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress } from '@mui/material';
+import { CircularProgress } from "@mui/material";
 
 export const AuthContext = createContext();
 
@@ -16,7 +16,7 @@ function AuthProvider({ children }) {
         setUser(user);
         if (user.accessToken !== localStorage.getItem("accessToken")) {
           localStorage.setItem("accessToken", user.accessToken);
-          window.localtion.reload()
+          window.localtion.reload();
         }
         setIsLoading(false);
         return;

@@ -1,27 +1,40 @@
 import fakeData from "../fakeData.mjs";
-import { AuthorModel, FolderModel } from "../models/index.js";
+import { AuthorModel, FolderModel, NoteModel } from "../models/index.js";
 export const resolvers = {
   Query: {
-    folders: async (parent, arg, context) => {
-      const folders = await FolderModel.find({ authorId: context.uid });
+    folders: async (_, __, context) => {
+      const folders = await FolderModel.find({ authorId: context.uid }).sort({
+        updatedAt: "desc",
+      });
       return folders;
     },
     folder: async (_, arg) => {
       const folderId = arg.folderId;
-      const foundFolder = await FolderModel.findOne({ _id: folderId });
+      const foundFolder = await FolderModel.findOne({ _id: folderId }); // can use findById
       return foundFolder;
     },
-    note: (parent, arg) => {
-      return fakeData.notes.filter(({ folderId }) => folderId === parent.id);
+    note: async (parent, arg) => {
+      const foundNote = await NoteModel.findOne({ _id: arg.noteId }); // can use findById
+      if (foundNote) return foundNote;
     },
   },
   Folder: {
-    author: (parent) => {
+    author: async (parent) => {
       const authorId = parent.authorId;
-      return fakeData.authors.find((author) => author.id === authorId);
+      const foundUser = await AuthorModel.findOne({ uid: authorId });
+      if (foundUser) {
+        const { _id, name } = foundUser;
+        return {
+          id: _id,
+          name,
+        };
+      }
+      return null;
     },
-    notes: (parent, arg) => {
-      return fakeData.notes.filter(({ folderId }) => folderId === parent.id);
+    notes: async (parent) => {
+      console.log(113113, parent);
+      const foundNote = await NoteModel.find({ folderId: parent._id });
+      if (foundNote) return foundNote;
     },
   },
   Mutation: {
@@ -38,6 +51,11 @@ export const resolvers = {
         return newUser;
       }
       return foundUser;
+    },
+    addNote: async (parent, arg, context) => {
+      const newNote = new NoteModel(arg);
+      await newNote.save();
+      return newNote;
     },
   },
 };
