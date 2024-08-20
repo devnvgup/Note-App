@@ -1,6 +1,16 @@
-import fakeData from "../fakeData.mjs";
 import { AuthorModel, FolderModel, NoteModel } from "../models/index.js";
+import { GraphQLScalarType } from "graphql";
+
 export const resolvers = {
+  Date: new GraphQLScalarType({
+    name: "Date",
+    parseValue(value) {
+      return new Date(value);
+    },
+    serialize(value) {
+      return value.toISOString();
+    },
+  }),
   Query: {
     folders: async (_, __, context) => {
       const folders = await FolderModel.find({ authorId: context.uid }).sort({
@@ -33,7 +43,9 @@ export const resolvers = {
     },
     notes: async (parent) => {
       console.log(113113, parent);
-      const foundNote = await NoteModel.find({ folderId: parent._id });
+      const foundNote = await NoteModel.find({ folderId: parent._id }).sort({
+        updatedAt: "desc",
+      });
       if (foundNote) return foundNote;
     },
   },
@@ -56,6 +68,11 @@ export const resolvers = {
       const newNote = new NoteModel(arg);
       await newNote.save();
       return newNote;
+    },
+    updateNote: async (parent, arg, context) => {
+      const noteId = arg.id;
+      const note = await NoteModel.findByIdAndUpdate(noteId, arg);
+      return note;
     },
   },
 };
