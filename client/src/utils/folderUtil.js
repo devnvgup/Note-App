@@ -5,11 +5,14 @@ export const folderLoader = async () => {
       folders {
         createdAt
         id
-        name
+        name,
+        notes {
+          id
+        }
       }
     }`;
   const data = await request({ query });
-  return data;
+  return data || [];
 };
 
 export const addNewFolder = async (newFolder) => {
@@ -28,4 +31,31 @@ export const addNewFolder = async (newFolder) => {
     },
   };
   const data = await request(payload);
+};
+
+
+export const deleteFolder = async ({ params, request: httpRequest }) => {
+  const deleteFolder = await httpRequest.formData();
+  const formDataObj = {};
+
+  deleteFolder.forEach((value, key) => (formDataObj[key] = value));
+
+  const query = `
+  mutation DeleteFolder($deleteFolderId: String!) {
+    deleteFolder(id: $deleteFolderId) {
+      id,
+      name
+    }
+  }
+      `;
+  const payload = {
+    query,
+    variables: {
+      ...formDataObj,
+      deleteFolderId: formDataObj.deleteFolderId,
+    },
+  };
+
+  const data = await request(payload);
+  return data || [];
 };

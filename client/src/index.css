@@ -7,3 +7,27 @@
 #root {
   width: 100%;
 }
+
+.content {
+  background-color: #f0f0f0;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.content:hover {
+  background-color: #e0e0e0;
+}
+
+.delete-text {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.content:hover .delete-text {
+  display: inline;
+}

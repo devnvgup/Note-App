@@ -1,14 +1,38 @@
 import { Box, Card, CardContent, List, Typography } from "@mui/material";
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams, useSubmit } from "react-router-dom";
 import NewFolder from "./NewFolder";
 
 function FolderList({ folder }) {
   const { folderId } = useParams();
+  const submit = useSubmit();
   const [activeFolderId, setActiveFolderId] = useState(folderId);
-  const handleClick = (id) => {
+  useEffect(()=>{
+    const existActiveFolder = folder.find((item)=>item.id === activeFolderId)
+    if(existActiveFolder){
+      setActiveFolderId(existActiveFolder?.id)
+    }else{
+      if(folder.length){
+        setActiveFolderId(folder[0]?.id)
+      }
+    }
+  },[folderId, folder.length])
+
+
+  const handleClick = (e,id) => {
+    if(e.target.className === "delete-text") return
     setActiveFolderId(id);
   };
+
+  const handleDelete=(e,id)=>{
+    e.preventDefault()
+      submit(
+       {
+         deleteFolderId:id,
+       },
+       { method: "delete", action: "/" }
+     );
+  }
   return (
     <List
       sx={{
@@ -44,13 +68,15 @@ function FolderList({ folder }) {
             }}
           >
             <Card
-              onClick={() => handleClick(id)}
+              className="content"
+              onClick={(e) => handleClick(e,id)}
               sx={{ mb: "5px" }}
               style={{
                 backgroundColor:
                   id === activeFolderId ? "rgb(255 211 140)" : null,
               }}
             >
+              <span onClick={(e)=>handleDelete(e,id)} class="delete-text">delete</span>
               <CardContent
                 sx={{ "&:last-child": { pb: "10px" }, padding: "10px" }}
               >

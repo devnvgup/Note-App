@@ -6,8 +6,8 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import NodeList from "../components/NoteList.jsx";
 import Note from "../components/Note.jsx";
-import { addNewNote, noteLoader, notesLoader, updateNote } from "../utils/noteUtil.js";
-import { folderLoader } from "../utils/folderUtil.js";
+import { addNewNote, noteLoader, notesLoader, updateNote, deleteNote } from "../utils/noteUtil.js";
+import { folderLoader, deleteFolder } from "../utils/folderUtil.js";
 //TODO
 const AuthLayout = () => {
   return (
@@ -31,6 +31,7 @@ export default createBrowserRouter([
           {
             element: <Home />,
             path: "/",
+            action: deleteFolder,
             loader: folderLoader,
             children: [
               {
@@ -42,7 +43,14 @@ export default createBrowserRouter([
                   {
                     element: <Note />,
                     path: "note/:noteId",
-                    action: updateNote,
+                    action: async ({ request, params }) => {
+                        const method = request.method;
+                      if (method === "POST") {
+                        return updateNote({params, request});
+                      } else if (method === "DELETE") {
+                        return deleteNote({params, request});
+                      }
+                    },
                     loader: noteLoader,
                   },
                 ],

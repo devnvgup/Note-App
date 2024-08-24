@@ -21,9 +21,9 @@ export const notesLoader = async ({ params }) => {
     },
   };
 
-  const data = await request(payload);
+  const {folder} = await request(payload);
 
-  return data;
+  return folder || {};
 };
 
 export const noteLoader = async ({ params }) => {
@@ -42,9 +42,9 @@ export const noteLoader = async ({ params }) => {
     },
   };
 
-  const data = await request(payload);
+  const {note} = await request(payload);
 
-  return data;
+  return note || {};
 };
 
 export const addNewNote = async ({ params, request: httpRequest }) => {
@@ -90,6 +90,32 @@ export const updateNote = async ({ params, request: httpRequest }) => {
     variables: {
       ...formDataObj,
       updateNoteId: formDataObj.id,
+    },
+  };
+
+  const data = await request(payload);
+  return data || [];
+};
+
+export const deleteNote = async ({ params, request: httpRequest }) => {
+  const deleteNote = await httpRequest.formData();
+  const formDataObj = {};
+
+  deleteNote.forEach((value, key) => (formDataObj[key] = value));
+
+  const query = `
+  mutation Mutation($deleteNoteId: String!) {
+    deleteNote(id: $deleteNoteId) {
+      id,
+      content
+    }
+  }
+      `;
+  const payload = {
+    query,
+    variables: {
+      ...formDataObj,
+      deleteNoteId: formDataObj.deleteNoteId,
     },
   };
 

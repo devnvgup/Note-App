@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ContentState, convertFromHTML, EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import draftToHtml  from "draftjs-to-html";
+import draftToHtml from "draftjs-to-html";
 import { debounce } from "@mui/material";
 import { useSubmit, useLocation, useLoaderData } from "react-router-dom";
 
@@ -9,20 +9,24 @@ function Note() {
   const submit = useSubmit();
   const location = useLocation();
 
-  const {note} = useLoaderData();
-  
+  const note = useLoaderData() || {};
+
+
+
   const [editorState, setEditorState] = useState(() => {
     return EditorState.createEmpty();
   });
   const [rawHTML, setRawHTML] = useState(note.content);
 
   useEffect(() => {
-    const blockFromHTML = convertFromHTML(note.content);
-    const state = ContentState.createFromBlockArray(
-      blockFromHTML.contentBlocks,
-      blockFromHTML.entityMap
-    );
-    setEditorState(EditorState.createWithContent(state));
+    if (note?.content) {
+      const blockFromHTML = convertFromHTML(note.content);
+      const state = ContentState.createFromBlockArray(
+        blockFromHTML.contentBlocks,
+        blockFromHTML.entityMap
+      );
+      setEditorState(EditorState.createWithContent(state));
+    }
   }, [note.id]);
 
   useEffect(() => {
@@ -47,7 +51,7 @@ function Note() {
   }, [note.content]);
 
   const handleOnChange = (e) => {
-    setEditorState(e);    
+    setEditorState(e);
     setRawHTML(draftToHtml(convertToRaw(e.getCurrentContent())));
   };
 
